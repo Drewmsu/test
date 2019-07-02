@@ -1,0 +1,83 @@
+/*Monto venta distribuidor COLUMNADO*/
+SELECT
+ [Measures].[Sales Amount] ON COLUMNS
+FROM [Ventas];
+/*Monto venta distribuidor 
+ filtrado por US Dolares COLUMNADO*/
+SELECT
+ [Measures].[Sales Amount] ON COLUMNS
+FROM [Ventas]
+WHERE [Monedas].[Moneda].[US Dollar];
+/*Monto venta distribuidor (columnado)
+ por cada tipo de moneda (fila)*/
+SELECT
+ [Measures].[Sales Amount] ON COLUMNS,
+ NonEmpty([Monedas].[Moneda].members) ON ROWS
+FROM [Ventas];
+/*Monto venta distribuidor (columnado)
+ por cada tipo de moneda (fila)
+ filtrado para el año 2012 
+ use la dimensión "fecha ordenes" */
+ SELECT
+ [Measures].[Sales Amount] ON COLUMNS,
+ NonEmpty([Monedas].[Moneda].members) ON ROWS
+FROM [Ventas]
+WHERE [Fecha Ordenes].[Año].[2012];
+/*quitar el "All" se usa "children" en
+lugar del "members"*/
+ SELECT
+ [Measures].[Sales Amount] ON COLUMNS,
+ NonEmpty([Monedas].[Moneda].children) ON ROWS
+FROM [Ventas]
+WHERE [Fecha Ordenes].[Año].[2012];
+/*Mostrar todas las medidas columnadas
+del query anterior (use members)
+*/
+ SELECT
+ [Measures].members ON COLUMNS,
+ NonEmpty([Monedas].[Moneda].children) ON ROWS
+FROM [Ventas]
+WHERE [Fecha Ordenes].[Año].[2012];
+
+/*Solo 2 columnas*/
+ SELECT
+ {
+  ([Measures].[Sales Amount IN]),
+  ([Measures].[Sales Amount])
+ } ON COLUMNS,
+ NonEmpty([Monedas].[Moneda].children) ON ROWS
+FROM [Ventas]
+WHERE [Fecha Ordenes].[Año].[2012];
+
+/*2 filas 
+*/
+
+SELECT
+ [Measures].[Sales Amount] ON COLUMNS,
+      NonEmpty(
+	            (
+				 [Monedas].[Moneda].children,
+		         [Fecha Ordenes].[Año].children
+				 )
+		      )
+         ON ROWS
+FROM [Ventas];
+
+/*use de prevmember*/
+SELECT
+ {
+ ([Fecha Ordenes].[Año].[2013],[Measures].[Sales Amount]),
+ ([Fecha Ordenes].[Año].[2013].PREVMEMBER,[Measures].[Sales Amount])
+ }
+  on columns
+FROM
+VENTAS;
+
+
+
+
+
+
+
+
+
